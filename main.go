@@ -1,9 +1,13 @@
 package main
 
 import (
-	"github.com/Tanzor-Disco/GOndon/engine"
+	"fmt"
+	"github.com/Tanzor-Disco/GOndon/board"
+	_ "github.com/Tanzor-Disco/GOndon/engine"
 )
 
 func main() {
-	engine.Run()
+	// engine.Run()
+	test := board.NewBoard()
+	fmt.Println(test.DrawBoard())
 }

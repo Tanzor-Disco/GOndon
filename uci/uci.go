@@ -195,7 +195,7 @@ func (r *UCIHandler) writeUCI() error {
 
 func (r *UCIHandler) writeIsReady() error {
 	defer r.Writer.Flush()
-	if _, err := r.Writer.WriteString("readyok"); err != nil {
+	if _, err := r.Writer.WriteString("readyok\n"); err != nil {
 		return fmt.Errorf("writeIsReady: error while writing readyok: %w", err)
 	}
 	return nil
