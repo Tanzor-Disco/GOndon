@@ -9,5 +9,9 @@ import (
 func main() {
 	// engine.Run()
 	test := board.NewBoard()
+	err := test.RemovePiece(board.A1)
+	if err != nil {
+		fmt.Println(err)
+	}
 	fmt.Println(test.DrawBoard())
 }

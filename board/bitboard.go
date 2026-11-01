@@ -2,33 +2,46 @@ package board
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 )
 
-const charBase = 97
-const period = 8
-
 type BitBoard uint64
 
-func getBitShift(square string) (int, error) {
-	if len(square) != 2 {
-		return 0, fmt.Errorf("getBitShift: invalid length supplied: wanted 2, got %d", len(square))
+func (b *BitBoard) SetPiece(square Square) error {
+	if !IsValidSquare(square) {
+		return fmt.Errorf("SetPiece: square out of bounds")
 	}
 
-	char := square[0]
-	if !(char >= 'a' && char <= 'h') {
-		return 0, fmt.Errorf("getBitShift: invalid character supplied: %b", char)
-	}
-
-	number, err := strconv.Atoi(string(square[1]))
-	if err != nil {
-		return 0, fmt.Errorf("getBitShift: strconv.Atoi: %w", err)
-	}
-	shift := int(char) - charBase + period*(number-1)
-	return shift, nil
+	// square is an uint8; its value corresponds to the bit shift
+	*b |= BitBoard(1) << square
+	return nil
 }
 
+func (b *BitBoard) HasPieceAtSquare(square Square) bool {
+	// square is an uint8; its value corresponds to the bit shift
+	pattern := BitBoard(1) << square
+	return *b&pattern != 0
+}
+
+func (b *BitBoard) hasPieceAtIdx(idx int) (bool, error) {
+	if idx > 63 || idx < 0 {
+		return false, fmt.Errorf("checkIdx: index out of bounds")
+	}
+
+	return *b&(BitBoard(1)<<idx) != 0, nil
+}
+
+func (b *BitBoard) Remove(square Square) (BitBoard, error) {
+	// square is an uint8; its value corresponds to the bit shift
+	pattern := BitBoard(1) << square
+	squareTaken := b.HasPieceAtSquare(square)
+	if !squareTaken {
+		return BitBoard(0), fmt.Errorf("Remove: the square isn't taken")
+	}
+	return *b &^ pattern, nil
+}
+
+// drawing the bitboard
 func (b *BitBoard) getBits() string {
 	return fmt.Sprintf("%064b", *b)
 }
@@ -46,46 +59,4 @@ func (b *BitBoard) DrawBoard() string {
 		}
 	}
 	return strings.Join(parts, "")
-}
-
-func (b *BitBoard) Set(square string) error {
-	bitShift, err := getBitShift(square)
-	if err != nil {
-		return fmt.Errorf("Set: %w", err)
-	}
-	*b |= BitBoard(1) << bitShift
-	return nil
-}
-
-func (b *BitBoard) CheckPosition(square string) (bool, error) {
-	bitShift, err := getBitShift(square)
-	if err != nil {
-		return false, fmt.Errorf("CheckPosition: %w", err)
-	}
-	pattern := BitBoard(1) << bitShift
-	return *b&pattern != 0, nil
-}
-
-func (b *BitBoard) checkIdx(idx int) (bool, error) {
-	if idx > 63 || idx < 0 {
-		return false, fmt.Errorf("checkIdx: index out of bounds")
-	}
-
-	return *b&(BitBoard(1)<<idx) != 0, nil
-}
-
-func (b *BitBoard) Remove(square string) (BitBoard, error) {
-	bitShift, err := getBitShift(square)
-	if err != nil {
-		return BitBoard(0), fmt.Errorf("Remove: %w", err)
-	}
-	pattern := BitBoard(1) << bitShift
-	squareTaken, err := b.CheckPosition(square)
-	if err != nil {
-		return BitBoard(0), fmt.Errorf("Remove: %w", err)
-	}
-	if !squareTaken {
-		return BitBoard(0), fmt.Errorf("Remove: the square isn't taken")
-	}
-	return *b &^ pattern, nil
 }

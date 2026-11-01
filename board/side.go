@@ -10,90 +10,87 @@ type SideColor uint8
 const (
 	White SideColor = iota
 	Black
+	NoColor
 
 	EmptySquare = "."
 )
 
+func IsValidColor(color SideColor) bool {
+	return color < NoColor
+}
+
 type Side struct {
-	Color   SideColor
-	Pawns   BitBoard
-	Bishops BitBoard
-	Knights BitBoard
-	Rooks   BitBoard
-	Queens  BitBoard
-	King    BitBoard
+	Color  SideColor
+	Pieces [6]BitBoard
 }
 
 func createWhiteSide() Side {
-	var pawns BitBoard
-	for shift := range 8 {
-		letter := 'a' + shift
-		pawns.Set(string(letter) + "2")
-	}
+	pawns := BitBoard(255) << BitBoard(A2)
 
 	var bishops BitBoard
-	bishops.Set("c1")
-	bishops.Set("f1")
-	bishops.DrawBoard()
+	bishops.SetPiece(C1)
+	bishops.SetPiece(F1)
 
 	var knights BitBoard
-	knights.Set("b1")
-	knights.Set("g1")
+	knights.SetPiece(B1)
+	knights.SetPiece(G1)
 
 	var rooks BitBoard
-	rooks.Set("a1")
-	rooks.Set("h1")
+	rooks.SetPiece(A1)
+	rooks.SetPiece(H1)
 
 	var queens BitBoard
-	queens.Set("d1")
+	queens.SetPiece(D1)
 
 	var king BitBoard
-	king.Set("e1")
+	king.SetPiece(E1)
+
+	var pieces [6]BitBoard
+	pieces[Pawn] = pawns
+	pieces[Bishop] = bishops
+	pieces[Knight] = knights
+	pieces[Rook] = rooks
+	pieces[Queen] = queens
+	pieces[King] = king
 
 	return Side{
-		Color:   White,
-		Pawns:   pawns,
-		Bishops: bishops,
-		Knights: knights,
-		Rooks:   rooks,
-		Queens:  queens,
-		King:    king,
+		Color:  White,
+		Pieces: pieces,
 	}
 }
 
 func createBlackSide() Side {
-	var pawns BitBoard
-	for shift := range 8 {
-		letter := 'a' + shift
-		pawns.Set(string(letter) + "7")
-	}
+	pawns := BitBoard(255) << BitBoard(A7)
 
 	var bishops BitBoard
-	bishops.Set("c8")
-	bishops.Set("f8")
+	bishops.SetPiece(C8)
+	bishops.SetPiece(F8)
 
 	var knights BitBoard
-	knights.Set("b8")
-	knights.Set("g8")
+	knights.SetPiece(B8)
+	knights.SetPiece(G8)
 
 	var rooks BitBoard
-	rooks.Set("a8")
-	rooks.Set("h8")
+	rooks.SetPiece(A8)
+	rooks.SetPiece(H8)
 
 	var queens BitBoard
-	queens.Set("d8")
+	queens.SetPiece(D8)
 
 	var king BitBoard
-	king.Set("e8")
+	king.SetPiece(E8)
+
+	var pieces [6]BitBoard
+	pieces[Pawn] = pawns
+	pieces[Bishop] = bishops
+	pieces[Knight] = knights
+	pieces[Rook] = rooks
+	pieces[Queen] = queens
+	pieces[King] = king
 
 	return Side{
-		Color:   Black,
-		Pawns:   pawns,
-		Bishops: bishops,
-		Knights: knights,
-		Rooks:   rooks,
-		Queens:  queens,
-		King:    king,
+		Color:  Black,
+		Pieces: pieces,
 	}
 }
 
@@ -104,9 +101,78 @@ func NewSide(color SideColor) Side {
 	return createBlackSide()
 }
 
+func (s *Side) PieceAt(square Square) (PieceType, bool) {
+	if !IsValidSquare(square) {
+		return NoPiece, false
+	}
+
+	// square is an uint8; its value corresponds to the bit shift
+	mask := BitBoard(1) << BitBoard(square)
+	for pieceNum, bitboard := range s.Pieces {
+		if bitboard&mask != 0 {
+			return PieceType(pieceNum), true
+		}
+	}
+	return NoPiece, false
+}
+
+func (s *Side) AddPiece(piece PieceType, square Square) error {
+	if !IsValidSquare(square) {
+		return fmt.Errorf("AddPiece: adding to invalid square")
+	}
+	if !IsValidPieceType(piece) {
+		return fmt.Errorf("AddPiece: invalid piece type")
+	}
+
+	// square is an uint8; its value corresponds to the bit shift
+	mask := BitBoard(1) << BitBoard(square)
+	s.Pieces[piece] |= mask
+	return nil
+}
+
+func (s *Side) RemovePiece(square Square) error {
+	if !IsValidSquare(square) {
+		return fmt.Errorf("RemovePiece: removing from invalid square")
+	}
+
+	piece, ok := s.PieceAt(square)
+	if !ok {
+		return fmt.Errorf("RemovePiece: PieceAt: no piece at the square")
+	}
+
+	// square is an uint8; its value corresponds to the bit shift
+	mask := BitBoard(1) << BitBoard(square)
+	s.Pieces[piece] &^= mask
+	return nil
+}
+
+func (s *Side) GetOccupied() BitBoard {
+	var bitboard BitBoard
+	for _, pieceBoard := range s.Pieces {
+		bitboard |= pieceBoard
+	}
+	return bitboard
+}
+
+func (s *Side) IsEmpty(square Square) bool {
+	if !IsValidSquare(square) {
+		return false
+	}
+
+	// square is an uint8; its value corresponds to the bit shift
+	mask := BitBoard(1) << BitBoard(square)
+	for _, bitboard := range s.Pieces {
+		if bitboard&mask != 0 {
+			return false
+		}
+	}
+	return true
+}
+
+// drawing the board
 func fillBoard(board [][]string, tag string, bitBoard BitBoard) error {
 	for idx := range 64 {
-		filled, err := bitBoard.checkIdx(idx)
+		filled, err := bitBoard.hasPieceAtIdx(idx)
 		if err != nil {
 			return fmt.Errorf("fillBoard: %w", err)
 		}
@@ -131,22 +197,22 @@ func (s *Side) DrawSide() (string, error) {
 		board[rowIdx] = curr
 	}
 
-	if err := fillBoard(board, "p", s.Pawns); err != nil {
+	if err := fillBoard(board, "p", s.Pieces[Pawn]); err != nil {
 		return "", err
 	}
-	if err := fillBoard(board, "n", s.Knights); err != nil {
+	if err := fillBoard(board, "n", s.Pieces[Knight]); err != nil {
 		return "", err
 	}
-	if err := fillBoard(board, "b", s.Bishops); err != nil {
+	if err := fillBoard(board, "b", s.Pieces[Bishop]); err != nil {
 		return "", err
 	}
-	if err := fillBoard(board, "r", s.Rooks); err != nil {
+	if err := fillBoard(board, "r", s.Pieces[Rook]); err != nil {
 		return "", err
 	}
-	if err := fillBoard(board, "q", s.Queens); err != nil {
+	if err := fillBoard(board, "q", s.Pieces[Queen]); err != nil {
 		return "", err
 	}
-	if err := fillBoard(board, "k", s.King); err != nil {
+	if err := fillBoard(board, "k", s.Pieces[King]); err != nil {
 		return "", err
 	}
 
