@@ -74,6 +74,7 @@ const (
 	F8
 	G8
 	H8
+	EmptySquare
 )
 
 func IsValidSquare(square Square) bool {

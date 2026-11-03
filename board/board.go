@@ -87,6 +87,36 @@ func (b *Board) GetSideOccupied(side SideColor) BitBoard {
 	}
 }
 
+func (b *Board) MakeMove(move Move) error {
+	fromPieceType, fromColor, ok := b.PieceAt(move.From)
+	if !ok {
+		return fmt.Errorf("MakeMove: PieceAt: cannot make move: no piece found at the square")
+	}
+	if _, toColor, ok := b.PieceAt(move.To); ok {
+		if toColor == fromColor {
+			return fmt.Errorf("MakeMove: cannot move to the square already occupied by the same side")
+		}
+		if err := b.RemovePiece(move.To); err != nil {
+			return fmt.Errorf("MakeMove: %w", err)
+		}
+	}
+	if err := b.RemovePiece(move.From); err != nil {
+		return fmt.Errorf("MakeMove: %w", err)
+	}
+
+	if move.Promotion != nil {
+		if err := b.AddPiece(move.To, *move.Promotion, fromColor); err != nil {
+			return fmt.Errorf("MakeMove: %w", err)
+		}
+	} else {
+		if err := b.AddPiece(move.To, fromPieceType, fromColor); err != nil {
+			return fmt.Errorf("MakeMove: %w", err)
+		}
+	}
+
+	return nil
+}
+
 // drawing the board
 func (b *Board) DrawBoard() (string, error) {
 	var builder strings.Builder
@@ -102,13 +132,13 @@ func (b *Board) DrawBoard() (string, error) {
 
 	for squareIdx, square := range white {
 		squareString := string(square)
-		if squareString != "\n" && squareString != EmptySquare {
+		if squareString != "\n" && squareString != EmptySquareString {
 			builder.WriteString(strings.ToUpper(squareString))
 			continue
 		}
 
 		squareString = string(black[squareIdx])
-		if squareString != "\n" && squareString != EmptySquare {
+		if squareString != "\n" && squareString != EmptySquareString {
 			builder.WriteString(squareString)
 			continue
 		}

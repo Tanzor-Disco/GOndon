@@ -12,7 +12,7 @@ const (
 	Black
 	NoColor
 
-	EmptySquare = "."
+	EmptySquareString = "."
 )
 
 func IsValidColor(color SideColor) bool {
@@ -187,7 +187,7 @@ func fillBoard(board [][]string, tag string, bitBoard BitBoard) error {
 func (s *Side) DrawSide() (string, error) {
 	var emptyRow []string
 	for range 8 {
-		emptyRow = append(emptyRow, EmptySquare)
+		emptyRow = append(emptyRow, EmptySquareString)
 	}
 
 	board := make([][]string, 8)

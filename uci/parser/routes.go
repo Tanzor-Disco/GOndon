@@ -9,4 +9,5 @@ var routes = map[string]ParserFunc{
 	"isready":    parseIsReady,
 	"ucinewgame": parseNewGame,
 	"go":         parseGo,
+	"position":   parsePosition,
 }

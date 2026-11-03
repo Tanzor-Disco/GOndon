@@ -14,6 +14,7 @@ func handleCommand(command parser.Command) output.Output {
 		return output.UCIOutput{}
 	case parser.IsReadyCommand:
 		return output.ReadyOutput{}
+	case parser.PositionCommand:
 	}
 	return nil
 }
@@ -28,6 +29,10 @@ func Run() error {
 		}
 
 		output := handleCommand(command)
+		if output == nil {
+			return fmt.Errorf("handleCommand: nil output")
+		}
+
 		if err := UCIHandler.UCIWriter.WriteOutput(output); err != nil {
 			return fmt.Errorf("Run: %w", err)
 		}
