@@ -1,0 +1,43 @@
+name: CI 
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: "actions/checkout@v4"
+
+      - name: Setup Go
+        uses: "actions/setup-go@v5"
+        with:
+          go-version-file: go.mod
+
+      - name: Check Formatting
+        run: |
+          files=$(gofmt -l .)
+          if [ -n "$files" ]; then
+            echo "The following files are not formatted:"
+            echo "$files"
+            exit 1
+          fi
+  
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chechout repository
+        uses: "actions/checkout@v5"
+
+      - name: Setup Go
+        uses: "actions/setup-go@v5"
+        with:
+          go-version-file: go.mod
+      
+      - name: Build Binary
+        run: go build .
+
