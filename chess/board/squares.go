@@ -1,5 +1,7 @@
 package board
 
+// Square is used to describe every chess board square
+// As an 8-bit unsigned integer
 type Square uint8
 
 const (

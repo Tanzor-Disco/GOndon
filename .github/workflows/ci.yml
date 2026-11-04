@@ -12,7 +12,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: "actions/checkout@v4"
-
       - name: Setup Go
         uses: "actions/setup-go@v5"
         with:
@@ -39,5 +38,5 @@ jobs:
           go-version-file: go.mod
       
       - name: Build Binary
-        run: go build .
+        run: go build cmd/GOndon/main.go
 

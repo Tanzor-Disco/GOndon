@@ -2,9 +2,10 @@ package board
 
 import (
 	"fmt"
-	"strings"
 )
 
+// BitBoard uses a 64-bit unsigned integer to symbolize a chess board
+// For a selected type of pieces
 type BitBoard uint64
 
 func (b *BitBoard) SetPiece(square Square) error {
@@ -23,7 +24,7 @@ func (b *BitBoard) HasPieceAtSquare(square Square) bool {
 	return *b&pattern != 0
 }
 
-func (b *BitBoard) hasPieceAtIdx(idx int) (bool, error) {
+func (b *BitBoard) HasPieceAtIdx(idx int) (bool, error) {
 	if idx > 63 || idx < 0 {
 		return false, fmt.Errorf("checkIdx: index out of bounds")
 	}
@@ -39,24 +40,4 @@ func (b *BitBoard) Remove(square Square) (BitBoard, error) {
 		return BitBoard(0), fmt.Errorf("Remove: the square isn't taken")
 	}
 	return *b &^ pattern, nil
-}
-
-// drawing the bitboard
-func (b *BitBoard) getBits() string {
-	return fmt.Sprintf("%064b", *b)
-}
-
-func (b *BitBoard) DrawBoard() string {
-	bits := b.getBits()
-	parts := make([]string, 0, len(bits)+len(bits)/8)
-	var counter int
-	for _, bit := range bits {
-		counter++
-		parts = append(parts, string(bit))
-		if counter == 8 {
-			counter = 0
-			parts = append(parts, "\n")
-		}
-	}
-	return strings.Join(parts, "")
 }

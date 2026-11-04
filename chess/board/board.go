@@ -2,7 +2,6 @@ package board
 
 import (
 	"fmt"
-	"strings"
 )
 
 type Board struct {
@@ -10,14 +9,21 @@ type Board struct {
 	Black Side
 }
 
-func NewBoard() Board {
-	white := NewSide(White)
-	black := NewSide(Black)
+func NewBoard() (Board, error) {
+
+	white, err := NewSide(White)
+	if err != nil {
+		return Board{}, fmt.Errorf("NewBoard: %w", err)
+	}
+	black, err := NewSide(Black)
+	if err != nil {
+		return Board{}, fmt.Errorf("NewBoard: %w", err)
+	}
 
 	return Board{
 		White: white,
 		Black: black,
-	}
+	}, nil
 }
 
 func (b *Board) PieceAt(square Square) (PieceType, SideColor, bool) {
@@ -115,34 +121,4 @@ func (b *Board) MakeMove(move Move) error {
 	}
 
 	return nil
-}
-
-// drawing the board
-func (b *Board) DrawBoard() (string, error) {
-	var builder strings.Builder
-
-	black, err := b.Black.DrawSide()
-	if err != nil {
-		return "", fmt.Errorf("DrawBoard: %w", err)
-	}
-	white, err := b.White.DrawSide()
-	if err != nil {
-		return "", fmt.Errorf("DrawBoard: %w", err)
-	}
-
-	for squareIdx, square := range white {
-		squareString := string(square)
-		if squareString != "\n" && squareString != EmptySquareString {
-			builder.WriteString(strings.ToUpper(squareString))
-			continue
-		}
-
-		squareString = string(black[squareIdx])
-		if squareString != "\n" && squareString != EmptySquareString {
-			builder.WriteString(squareString)
-			continue
-		}
-		builder.WriteString(squareString)
-	}
-	return builder.String(), nil
 }

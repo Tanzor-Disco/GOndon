@@ -1,5 +1,7 @@
 package board
 
+// PieceType describes a chess piece type
+// using 8-bit unsigned integer
 type PieceType uint8
 
 const (

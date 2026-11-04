@@ -15,6 +15,8 @@ func ParseCommand(input string) (Command, error) {
 	if len(parts) > 1 {
 		args = parts[1:]
 	}
+
+	// using map from routes.go to get the parser function
 	parseFunc, ok := routes[command]
 	if !ok {
 		return nil, fmt.Errorf("ParseCommand: invalid command passed")

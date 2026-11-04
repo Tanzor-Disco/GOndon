@@ -11,6 +11,9 @@
 #binary folder
 bin/
 
+#extra main.go for tests
+cmd/dev/
+
 # Test binary, built with `go test -c`
 *.test
 
