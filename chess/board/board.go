@@ -94,6 +94,7 @@ func (b *Board) GetSideOccupied(side SideColor) BitBoard {
 }
 
 func (b *Board) MakeMove(move Move) error {
+	fmt.Println(move)
 	fromPieceType, fromColor, ok := b.PieceAt(move.From)
 	if !ok {
 		return fmt.Errorf("MakeMove: PieceAt: cannot make move: no piece found at the square")

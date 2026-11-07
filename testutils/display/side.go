@@ -2,7 +2,7 @@ package display
 
 import (
 	"fmt"
-	"github.com/Tanzor-Disco/GOndon/board"
+	"github.com/Tanzor-Disco/GOndon/chess/board"
 	"strings"
 )
 
@@ -13,8 +13,7 @@ func fillBoard(board [][]string, tag string, bitBoard board.BitBoard) error {
 			return fmt.Errorf("fillBoard: %w", err)
 		}
 		if filled {
-			// inverting to achieve the view from the white perspective
-			board[7-idx/8][idx%8] = tag
+			board[idx/8][idx%8] = tag
 		}
 	}
 	return nil
@@ -53,8 +52,8 @@ func DrawSide(side *board.Side) (string, error) {
 	}
 
 	parts := make([]string, 0, len(currBoard))
-	for _, row := range currBoard {
-		parts = append(parts, strings.Join(row, ""))
+	for rank := 7; rank >= 0; rank-- {
+		parts = append(parts, strings.Join(currBoard[rank], ""))
 	}
 	return strings.Join(parts, "\n"), nil
 }

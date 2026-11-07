@@ -2,7 +2,7 @@ package display
 
 import (
 	"fmt"
-	"github.com/Tanzor-Disco/GOndon/board"
+	"github.com/Tanzor-Disco/GOndon/chess/board"
 	"strings"
 )
 

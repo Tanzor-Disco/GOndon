@@ -17,3 +17,12 @@ const (
 func IsValidPieceType(piece PieceType) bool {
 	return piece < NoPiece
 }
+
+var PieceTypeMap = map[rune]PieceType{
+	'p': Pawn,
+	'n': Knight,
+	'b': Bishop,
+	'r': Rook,
+	'q': Queen,
+	'k': King,
+}

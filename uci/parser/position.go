@@ -8,9 +8,9 @@ import (
 
 var startPosFEN = FEN{
 	PiecePlacement: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR",
-	ActiveColor:    "w",
-	Castling:       "KQkq",
-	EnPassant:      "-",
+	ActiveColor:    board.White,
+	Castling:       CastlingRights{true, true, true, true},
+	EnPassant:      nil,
 	HalfmoveClock:  0,
 	FullmoveNumber: 1,
 }
@@ -21,11 +21,18 @@ type PositionCommand struct {
 
 func (PositionCommand) isCommand() {}
 
+type CastlingRights struct {
+	WhiteKingside  bool
+	WhiteQueenside bool
+	BlackKingside  bool
+	BlackQueenside bool
+}
+
 type FEN struct {
 	PiecePlacement string
-	ActiveColor    string
-	Castling       string
-	EnPassant      string
+	ActiveColor    board.SideColor
+	Castling       CastlingRights
+	EnPassant      *board.Square
 	HalfmoveClock  uint8
 	FullmoveNumber uint16
 }
@@ -86,10 +93,10 @@ func parseUCIMove(move string) (board.Move, error) {
 	if err != nil {
 		return board.Move{}, fmt.Errorf("parseUCIMove: %w", err)
 	}
-	var promotion board.PieceType
+	var promotion *board.PieceType
 	if len(move) == 5 {
-		var err error
-		promotion, err = parsePromotionPieceType(move[4])
+		temp, err := parsePromotionPieceType(move[4])
+		promotion = &temp
 		if err != nil {
 			return board.Move{}, fmt.Errorf("parseUCIMove: %w", err)
 		}
@@ -97,7 +104,7 @@ func parseUCIMove(move string) (board.Move, error) {
 	return board.Move{
 		From:      from,
 		To:        to,
-		Promotion: &promotion,
+		Promotion: promotion,
 	}, nil
 }
 
@@ -137,12 +144,75 @@ func parseStartPos(args []string) (Position, error) {
 	}, nil
 }
 
+func parseColor(color string) (board.SideColor, error) {
+	switch color {
+	case "w":
+		return board.White, nil
+	case "b":
+		return board.Black, nil
+	default:
+		return board.NoColor, fmt.Errorf("parseColor: invalid color")
+
+	}
+}
+
+func parseCastlingRights(castling string) (CastlingRights, error) {
+	if castling == "-" {
+		return CastlingRights{}, nil
+	}
+
+	var rights CastlingRights
+	for _, el := range castling {
+		switch el {
+		case 'K':
+			rights.WhiteKingside = true
+		case 'Q':
+			rights.WhiteQueenside = true
+		case 'k':
+			rights.BlackKingside = true
+		case 'q':
+			rights.BlackQueenside = true
+		default:
+			return CastlingRights{}, fmt.Errorf("parseCastlingRights: invalid symbol")
+		}
+	}
+	return rights, nil
+}
+
+func parseEnPassant(input string) (*board.Square, error) {
+	if input == "-" {
+		return nil, nil
+	}
+
+	square, err := parseSquare(input)
+	if err != nil {
+		return nil, fmt.Errorf("parseEnPassant: %w", err)
+	}
+	return &square, nil
+}
+
 func parseFEN(fen []string) (FEN, error) {
 	var output FEN
 	output.PiecePlacement = fen[0]
-	output.ActiveColor = fen[1]
-	output.Castling = fen[2]
-	output.EnPassant = fen[3]
+
+	color, err := parseColor(fen[1])
+	if err != nil {
+		return FEN{}, fmt.Errorf("parseFEN: %w", err)
+	}
+	output.ActiveColor = color
+
+	castling, err := parseCastlingRights(fen[2])
+	if err != nil {
+		return FEN{}, fmt.Errorf("parseFEN: %w", err)
+	}
+	output.Castling = castling
+
+	enPassantSquare, err := parseEnPassant(fen[3])
+	if err != nil {
+		return FEN{}, fmt.Errorf("parseFEN: %w", err)
+	}
+	output.EnPassant = enPassantSquare
+
 	halfmove, err := strconv.Atoi(fen[4])
 	if err != nil {
 		return FEN{}, fmt.Errorf("parseFEN: %w", err)
