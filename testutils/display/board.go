@@ -20,13 +20,13 @@ func DrawBoard(b board.Board) (string, error) {
 
 	for squareIdx, square := range white {
 		squareString := string(square)
-		if squareString != "\n" && squareString != board.EmptySquareString {
+		if squareString != "\n" && squareString != EmptySquareString {
 			builder.WriteString(strings.ToUpper(squareString))
 			continue
 		}
 
 		squareString = string(black[squareIdx])
-		if squareString != "\n" && squareString != board.EmptySquareString {
+		if squareString != "\n" && squareString != EmptySquareString {
 			builder.WriteString(squareString)
 			continue
 		}

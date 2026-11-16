@@ -10,8 +10,6 @@ const (
 	White SideColor = iota
 	Black
 	NoColor
-
-	EmptySquareString = "."
 )
 
 func IsValidColor(color SideColor) bool {
