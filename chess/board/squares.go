@@ -1,5 +1,7 @@
 package board
 
+import "fmt"
+
 // Square is used to describe every chess board square
 // As an 8-bit unsigned integer
 type Square uint8
@@ -81,4 +83,22 @@ const (
 
 func IsValidSquare(square Square) bool {
 	return square < 64
+}
+
+func GetSquareFromRankAndFile(rank, file int) (Square, error) {
+	if rank > 7 || rank < 0 {
+		return 0, fmt.Errorf("GetSquareFromRankAndFile: invalid rank: %d", rank)
+	}
+	if file > 7 || file < 0 {
+		return 0, fmt.Errorf("GetSquareFromRankAndFile: invalid file: %d", file)
+	}
+	return Square(rank*8 + file), nil
+}
+
+func GetRankAndFileFromSquare(square Square) (int, int, error) {
+	if square > H8 {
+		return 0, 0, fmt.Errorf("GetRankAndFileFromSquare: invalid square")
+	}
+	squareInt := int(square)
+	return squareInt / 8, squareInt % 8, nil
 }

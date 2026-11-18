@@ -6,10 +6,6 @@ import (
 	"strings"
 )
 
-const (
-	EmptySquareString = "."
-)
-
 func fillBoard(board [][]string, tag string, bitBoard board.BitBoard) error {
 	for idx := range 64 {
 		filled, err := bitBoard.HasPieceAtIdx(idx)
@@ -23,7 +19,7 @@ func fillBoard(board [][]string, tag string, bitBoard board.BitBoard) error {
 	return nil
 }
 
-func DrawSide(side *board.Side) (string, error) {
+func DisplaySide(side *board.Side) (string, error) {
 	var emptyRow []string
 	for range 8 {
 		emptyRow = append(emptyRow, EmptySquareString)

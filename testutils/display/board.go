@@ -6,14 +6,14 @@ import (
 	"strings"
 )
 
-func DrawBoard(b board.Board) (string, error) {
+func DisplayBoard(b board.Board) (string, error) {
 	var builder strings.Builder
 
-	black, err := DrawSide(&b.Black)
+	black, err := DisplaySide(&b.Black)
 	if err != nil {
 		return "", fmt.Errorf("DrawBoard: %w", err)
 	}
-	white, err := DrawSide(&b.White)
+	white, err := DisplaySide(&b.White)
 	if err != nil {
 		return "", fmt.Errorf("DrawBoard: %w", err)
 	}
