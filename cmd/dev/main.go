@@ -2,16 +2,17 @@ package main
 
 import (
 	"fmt"
-	"github.com/Tanzor-Disco/GOndon/chess/board"
-	"github.com/Tanzor-Disco/GOndon/chess/engine/movegen/attacks/rook"
-	"github.com/Tanzor-Disco/GOndon/testutils/display"
 	"log"
+
+	"github.com/Tanzor-Disco/GOndon/chess/board"
+	"github.com/Tanzor-Disco/GOndon/chess/engine/movegen/attacks/bishop"
+	"github.com/Tanzor-Disco/GOndon/testutils/display"
 )
 
 func main() {
 	var bitTest board.BitBoard
-	bitTest.SetPiece(board.E5)
-	test, err := rook.GenerateAttacksForRookFromSquare(bitTest, board.E1)
+	bitTest.SetPiece(board.C6)
+	test, err := bishop.GenerateAttacksForBishopFromSquare(bitTest, board.D5)
 	if err != nil {
 		log.Println(err)
 		return
