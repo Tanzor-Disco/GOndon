@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Tanzor-Disco/GOndon/app"
+	"github.com/tanzor-disco/GOndon/app"
 	"log"
 )
 

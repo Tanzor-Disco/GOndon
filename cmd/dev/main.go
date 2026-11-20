@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Tanzor-Disco/GOndon/chess/board"
-	"github.com/Tanzor-Disco/GOndon/chess/engine/movegen/attacks/bishop"
-	"github.com/Tanzor-Disco/GOndon/testutils/display"
+	"github.com/tanzor-disco/GOndon/chess/board"
+	"github.com/tanzor-disco/GOndon/chess/engine/movegen/attacks/bishop"
+	"github.com/tanzor-disco/GOndon/testutils/display"
 )
 
 func main() {

@@ -3,8 +3,8 @@ package king
 import (
 	"fmt"
 
-	"github.com/Tanzor-Disco/GOndon/chess/board"
-	"github.com/Tanzor-Disco/GOndon/utils/models/candidatesquare"
+	"github.com/tanzor-disco/GOndon/chess/board"
+	"github.com/tanzor-disco/GOndon/utils/models/candidatesquare"
 )
 
 func getAttacksFromSquare(square board.Square) (board.BitBoard, error) {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Tanzor-Disco/GOndon/uci/output"
+	"github.com/tanzor-disco/GOndon/uci/output"
 )
 
 type UCIWriter struct {

@@ -3,7 +3,7 @@ package bishop
 import (
 	"fmt"
 
-	"github.com/Tanzor-Disco/GOndon/chess/board"
+	"github.com/tanzor-disco/GOndon/chess/board"
 )
 
 func getUpperLeftDiagonal(occupied board.BitBoard, square board.Square) (board.BitBoard, error) {

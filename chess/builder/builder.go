@@ -2,8 +2,8 @@ package builder
 
 import (
 	"fmt"
-	chessboard "github.com/Tanzor-Disco/GOndon/chess/board"
-	"github.com/Tanzor-Disco/GOndon/uci/parser"
+	chessboard "github.com/tanzor-disco/GOndon/chess/board"
+	"github.com/tanzor-disco/GOndon/uci/parser"
 	"slices"
 	"strings"
 	"unicode"

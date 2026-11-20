@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Tanzor-Disco/GOndon/chess/board"
+	"github.com/tanzor-disco/GOndon/chess/board"
 )
 
 func TestBitBoardSetAndQuery(t *testing.T) {

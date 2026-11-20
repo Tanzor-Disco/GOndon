@@ -3,8 +3,8 @@ package uci
 import (
 	"fmt"
 
-	"github.com/Tanzor-Disco/GOndon/uci/parser"
-	"github.com/Tanzor-Disco/GOndon/uci/writer"
+	"github.com/tanzor-disco/GOndon/uci/parser"
+	"github.com/tanzor-disco/GOndon/uci/writer"
 )
 
 type UCIHandler struct {

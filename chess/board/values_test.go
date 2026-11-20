@@ -3,7 +3,7 @@ package board_test
 import (
 	"testing"
 
-	"github.com/Tanzor-Disco/GOndon/chess/board"
+	"github.com/tanzor-disco/GOndon/chess/board"
 )
 
 func TestIsValidSquare(t *testing.T) {

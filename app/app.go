@@ -1,10 +1,10 @@
 package app
 
 import (
-	"github.com/Tanzor-Disco/GOndon/chess/builder"
-	"github.com/Tanzor-Disco/GOndon/uci"
-	"github.com/Tanzor-Disco/GOndon/uci/output"
-	"github.com/Tanzor-Disco/GOndon/uci/parser"
+	"github.com/tanzor-disco/GOndon/chess/builder"
+	"github.com/tanzor-disco/GOndon/uci"
+	"github.com/tanzor-disco/GOndon/uci/output"
+	"github.com/tanzor-disco/GOndon/uci/parser"
 
 	"fmt"
 )

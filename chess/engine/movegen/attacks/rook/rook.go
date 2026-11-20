@@ -3,7 +3,7 @@ package rook
 import (
 	"fmt"
 
-	"github.com/Tanzor-Disco/GOndon/chess/board"
+	"github.com/tanzor-disco/GOndon/chess/board"
 )
 
 func getAttacksLeft(occupied board.BitBoard, rank, file int) (board.BitBoard, error) {
